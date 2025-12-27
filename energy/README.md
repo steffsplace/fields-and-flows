@@ -46,8 +46,11 @@ project repositories referenced in **[PROJECTS.md](../PROJECTS.md)**.
 
 ## Implementations
 
+The heating control system is split into two coordinated components:  
+a low-level embedded controller (Portenta H7, C++) and a higher-level automation and user interface layer (Node-RED, deployed on RPi and Proxmox).
+Related repositories:  
 - Heating Controller (Portenta H7, C++, MQTT): https://github.com/steffsplace/HeatingController_MQTT  
-  Networked heating controller firmware and MQTT integration baseline.
+- Automation / UI: https://github.com/steffsplace/HeatingController_NodeRED
 
 ---
 
