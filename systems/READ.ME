@@ -50,5 +50,70 @@ project repositories referenced in **[PROJECTS.md](../PROJECTS.md)**.
 - gradual refinement through operational feedback  
 
 ---
+---
 
-#
+## System Architecture Overview
+
+The current control and automation infrastructure is organized as a layered system.
+
+### Embedded Control Layer
+
+Low-level real-time control implemented on dedicated hardware.
+
+- Microcontroller: **Portenta H7**
+- Language: **C++**
+- Responsibilities:
+  - sensor acquisition
+  - actuator control
+  - real-time regulation
+  - MQTT communication
+
+Repository:
+- Firmware / controller:  
+  https://github.com/steffsplace/HeatingController_MQTT
+
+---
+
+### Automation & Interface Layer
+
+Higher-level orchestration, visualization, and automation.
+
+- Platform: **Node-RED**
+- Deployment targets:
+  - **Raspberry Pi**
+  - **Proxmox virtual machines**
+- Responsibilities:
+  - system supervision
+  - data aggregation and logging
+  - user interface and dashboards
+  - automation workflows
+  - integration with energy and building systems
+
+Repository:
+- Automation / UI:  
+  https://github.com/steffsplace/HeatingController_NodeRED
+
+---
+
+### Infrastructure Layer
+
+Supporting environment for running distributed services.
+
+- Docker-based services
+- Proxmox virtualization
+- Network services and monitoring
+- Backup and deployment tooling
+
+This layer enables flexible deployment of control, automation, and experimental
+services across physical and virtual hardware.
+
+---
+
+## Design Principles (Applied)
+
+- clear separation of control and automation responsibilities  
+- reproducible deployments  
+- observable systems (logging, monitoring, metrics)  
+- incremental evolution of infrastructure  
+
+
