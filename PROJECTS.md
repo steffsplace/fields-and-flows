@@ -29,7 +29,9 @@ Related conceptual material is maintained in
 ## Energy & Automation
 
 - - Heating control (Portenta H7, MQTT) — *active*  
-  - Firmware / core project: https://github.com/steffsplace/HeatingController_MQTT
+  - Firmware / Regler (Portenta H7, C++): https://github.com/steffsplace/HeatingController_MQTT  
+  - Automation / UI (Node-RED, RPi/Proxmox): https://github.com/steffsplace/HeatingController_NodeRED
+
 - KNX integration — *active*  
 - Electrical and solar power management — *active / planned*  
 - Charging station management — *planned*
