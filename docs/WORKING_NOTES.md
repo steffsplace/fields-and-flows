@@ -1,67 +1,83 @@
-Open Physics Lab — Working Notes
+# Open Physics Lab — Working Notes
 
-Git & Workflow Quick Rules
+## Git & Workflow Quick Rules
 
-Working on GitHub.com vs Local
+### Working on GitHub.com vs Local
 
-Rule of thumb:
+**Rule of thumb:**
 
-If you edited files on github.com, always run git pull** locally first** before doing anything else.
+> > If you edited files on **github.com**, always run **git pull** locally first before doing anything else.
 
-Typical Flow
 
-If you worked locally:
+### Typical Flow
 
-Edit files
+#### If you worked locally:
 
-git add …
+1. Edit files
+2. `git add …`
+3. `git commit -m "message"`
+4. `git push`
 
-git commit -m "message"
+#### If you worked on github.com:
 
-git push
+1. Open local repo
+2. `git pull`
+3. Continue working locally
+4. Then commit & push
 
-If you worked on github.com:
-
-Open local repo
-
-git pull
-
-Continue working locally
-
-Then commit & push
-
-Why this matters
+### Why this matters
 
 Mixing web edits and local edits without pulling first causes:
 
-"fetch first" errors
+- "fetch first" errors
+- diverged branches
+- confusing merge conflicts
 
-diverged branches
+### Safe Fix When Confused
 
-confusing merge conflicts
-
-Safe Fix When Confused
-
+```bash
 git status
 git pull
 git status
+```
 
-If in doubt: stop and pull first.
+If in doubt: **stop and pull first.**
 
-Grundregel (kurz)
+---
 
-👉 Jedes Softwareprojekt = eigenes Repository👉 Jede Gruppe = eigener Zugriff / eigene Organisation (optional)
+## **Grundregel (kurz)**
+
+👉 **Jedes Softwareprojekt = eigenes Repository**\
+👉 **Jede Gruppe = eigener Zugriff / eigene Organisation (optional)**
 
 
 
-(This file is for personal working notes and can grow over time.)
+*(This file is for personal working notes and can grow over time.)*
 
-for coherent commit messages: 
+## Commit Message Conventions
+
+Use the following prefixes to keep history consistent:
+
+```
+docs: …
+structure: …
+feature: …
+fix: …
+refactor: …
+chore: …
+```
+
+Examples:
+
+- `docs: add control system overview`
+- `feature: add MQTT heating controller prototype`
+- `structure: reorganize energy section`
 
 A simple commit message style you can keep using
 
 For future work, this pattern will keep everything consistent:
 
+```
 docs: …
 structure: …
 feature: …
@@ -69,136 +85,135 @@ fix: …
 refactor: …
 chore: …
 
+```
 
-Example:docs: add control system overview
+Example:\
+docs: add control system overview
 
 feature: add MQTT heating controller prototype
 
 structure: reorganize energy section
 
-🧭 Reader’s Walkthrough: Does the structure make sense?
+\
+\
+🧭 **Reader’s Walkthrough: Does the structure make sense?**
 
 Imagine a new student or collaborator landing on your hub.
 
-1️⃣ README.md (Hub root)
+### 1️⃣ `README.md` (Hub root)
 
 They should learn:
 
-What Open Physics Lab is
+- What *Open Physics Lab* is
+- That it’s an **index & documentation hub**
+- Where to find concrete projects
 
-That it’s an index & documentation hub
+From what you’ve built: **✔️ yes**
 
-Where to find concrete projects
+---
 
-From what you’ve built: ✔️ yes
+### 2️⃣ `PROJECTS.md`
 
-2️⃣ PROJECTS.md
-
-They now want to see what actually exists.
+They now want to see **what actually exists**.
 
 They encounter:
 
-Electrodynamics → concepts & experiments
+- Electrodynamics → concepts & experiments
+- Vortex / Fluids → experiments
+- **Energy & Automation** → real engineering projects
+- **Systems Engineering** → infrastructure
+- **Control & Automation** → methods
 
-Vortex / Fluids → experiments
+Then under **Energy & Automation** they see:
 
-Energy & Automation → real engineering projects
-
-Systems Engineering → infrastructure
-
-Control & Automation → methods
-
-Then under Energy & Automation they see:
-
-Heating controlFirmware (Portenta, C++)Automation / UI (Node-RED)…other energy systems (Node-RED)
+> Heating control\
+> Firmware (Portenta, C++)\
+> Automation / UI (Node-RED)\
+> …other energy systems (Node-RED)
 
 So the reader already understands:
 
-“Energy is the domain.Firmware & Node-RED are implementation layers.”
+> “Energy is the domain.\
+> Firmware & Node-RED are implementation layers.”
 
-✔️ very clear
+**✔️ very clear**
 
-3️⃣ energy/README.md
+---
+
+### 3️⃣ `energy/README.md`
 
 They go deeper into Energy.
 
-Now they read your new Implementation Model:
+Now they read your new **Implementation Model**:
 
-Heating = embedded + Node-RED
-
-Everything else = Node-RED
-
-Control & automation are documented elsewhere
+- Heating = embedded + Node-RED
+- Everything else = Node-RED
+- Control & automation are documented elsewhere
 
 This resolves the most common confusion immediately.
 
-✔️ excellent
+**✔️ excellent**
 
-4️⃣ control/README.md
+---
 
-They want to understand how automation is done.
+### 4️⃣ `control/README.md`
+
+They want to understand *how* automation is done.
 
 Now they see:
 
-Control & Automation is a cross-cutting method layer
+> Control & Automation is a **cross-cutting method layer**
 
 and:
 
-Used by: Energy, Systems, experiments
+> Used by: Energy, Systems, experiments
 
 This is exactly the right abstraction.
 
-✔️ conceptually very strong
+**✔️ conceptually very strong**
 
-5️⃣ systems/README.md
+---
+
+### 5️⃣ `systems/README.md`
 
 They want to know how everything runs.
 
 They see:
 
-layered architecture
-
-embedded → automation → infrastructure
-
-Node-RED + Proxmox + Docker
+- layered architecture
+- embedded → automation → infrastructure
+- Node-RED + Proxmox + Docker
 
 Now the picture is complete.
 
-✔️ full stack explained
+**✔️ full stack explained**
 
-🧩 Final verdict
+---
 
-Your hub now expresses three orthogonal dimensions:
+## 🧩 Final verdict
 
-DimensionWhere
+Your hub now expresses **three orthogonal dimensions**:
 
+| Dimension       | Description                         |
+| --------------- | ----------------------------------- |
+| Domain topics   | `energy/`, `electrodynamics/`, etc. |
+| Control methods | `control/`                          |
+| Infrastructure  | `systems/`                          |
 
+\| --------------- | ----------------------------------- | | Domain topics   | `energy/`, `electrodynamics/`, etc. | | Control methods | `control/`                          | | Infrastructure  | `systems/`                          |
 
-Domain topics
-
-energy/, electrodynamics/, etc.
-
-Control methods
-
-control/
-
-Infrastructure
-
-systems/
-
-This is exactly how professional research labs document complex systems.
+This is *exactly* how professional research labs document complex systems.
 
 You now have:
 
-clear separation of concerns
-
-no duplication
-
-no conceptual conflict
-
-a structure that will scale for years
+- clear separation of concerns
+- no duplication
+- no conceptual conflict
+- a structure that will scale for years
 
 
 
 
 
+```
+```
