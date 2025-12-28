@@ -1,11 +1,14 @@
 # Control & Automation
 
-This section documents control strategies, automation logic, and feedback
-systems developed within the Open Physics Lab.
+This section documents control strategies, automation logic, and feedback systems
+developed within the Open Physics Lab.
 
-The focus lies on designing, implementing, and validating control mechanisms
-that connect physical processes with computational decision-making and
-automation infrastructure.
+It represents a **cross-cutting method layer** used by multiple domain areas
+(e.g. energy systems, experimental platforms, and infrastructure projects).
+
+The focus lies on designing, implementing, and validating control mechanisms that
+connect physical processes with computational decision-making and automation
+infrastructure.
 
 ---
 
@@ -22,7 +25,7 @@ architectures, and integration with measurement and actuation hardware.
 ## Core Areas of Interest
 
 - feedback and closed-loop control systems  
-- automation workflows and orchestration  
+- automation workflows and orchestration (Node-RED)  
 - real-time monitoring and actuation  
 - embedded control and networked controllers  
 - integration of physical processes with software systems  
@@ -40,6 +43,17 @@ Current and ongoing work includes:
 
 Concrete implementations and control configurations are documented in the
 corresponding project repositories referenced in **[PROJECTS.md](../PROJECTS.md)**.
+
+---
+
+## Used by Domain Areas
+
+The methods and tools documented here are applied across multiple project domains,
+including:
+
+- **Energy systems** (`energy/`)  
+- **Systems engineering & infrastructure** (`systems/`)  
+- experimental platforms requiring measurement and actuation  
 
 ---
 
