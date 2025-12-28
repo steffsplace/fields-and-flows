@@ -30,6 +30,26 @@ distribution, and integration with automation platforms.
 
 ---
 
+## Implementation Model
+
+Energy-related projects in the Open Physics Lab combine domain-specific
+engineering with shared control and automation methods.
+
+Most energy systems are implemented primarily at the automation layer using
+Node-RED (orchestration, data handling, dashboards, integration).  
+Only the heating control includes an additional low-level embedded controller.
+
+- **Heating control**  
+  Embedded controller (Portenta H7, C++) + automation & UI (Node-RED)
+
+- **KNX integration, solar monitoring, power measurement, charging systems**  
+  Implemented primarily at the automation layer (Node-RED)
+
+Control strategies, feedback logic, and automation patterns used here are
+documented in the cross-cutting **Control & Automation** section
+(`control/README.md`).
+
+
 ## Experimental & Engineering Directions
 
 Current and planned work includes:
