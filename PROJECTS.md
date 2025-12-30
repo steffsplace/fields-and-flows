@@ -4,15 +4,15 @@ This document provides an overview of ongoing and planned work within the
 Open Physics Lab. It acts as a central index to concrete projects, experimental
 activities, and system implementations.
 
-Project descriptions are intentionally concise here; detailed documentation
-is maintained within the corresponding discipline directories and individual
+Project descriptions are intentionally concise here; detailed documentation is
+maintained within the corresponding discipline directories and individual
 project repositories.
 
 ---
 
 ## Electrodynamics (primary focus)
 
-- Electrodynamics laboratory notes and experiments — *starting*  
+- Electrodynamics laboratory notes and experiments — *starting*
 - Measurement and instrumentation practices — *starting*
 
 Related conceptual material is maintained in  
@@ -52,13 +52,12 @@ Related conceptual material is maintained in
 Related engineering documentation is maintained in  
 **`energy/README.md`**.
 
-
 ---
 
 ## Systems Engineering
 
-- Docker-based service environments — *active*  
-- Node-RED automation workflows — *active*  
+- Docker-based service environments — *active*
+- Node-RED automation workflows — *active*
 - Proxmox deployment patterns — *active*
 
 Related engineering documentation is maintained in  
@@ -68,7 +67,7 @@ Related engineering documentation is maintained in
 
 ## Control & Automation
 
-- Networked control systems — *active*  
+- Networked control systems — *active*
 - Feedback and regulation experiments — *active*
 
 Related engineering documentation is maintained in  
@@ -78,15 +77,15 @@ Related engineering documentation is maintained in
 
 ## Multimedia & Infrastructure
 
-- Music streaming systems — *maintenance*  
-- Voice assistant integration — *maintenance*  
+- Music streaming systems — *maintenance*
+- Voice assistant integration — *maintenance*
 - Surveillance and monitoring systems — *active*
 
 ---
 
 ## Project Status Legend
 
-- **starting** — early-stage exploration and setup  
-- **active** — ongoing development and operation  
-- **planned** — defined but not yet implemented  
+- **starting** — early-stage exploration and setup
+- **active** — ongoing development and operation
+- **planned** — defined but not yet implemented
 - **maintenance** — stable systems under upkeep
