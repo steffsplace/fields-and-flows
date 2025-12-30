@@ -43,11 +43,14 @@ Related conceptual material is maintained in
 
 ### Electrical & Solar Power Management — *active / planned*
 
-*(Node-RED–based automation and monitoring; repository to be created)*
+- **Automation (Node-RED)**  
+  https://github.com/steffsplace/Solar_Monitoring_NodeRED
 
 ### Charging Infrastructure & Load Management — *active / planned*
 
-*(Node-RED–based control and orchestration; repository to be created)*
+- **Automation (Node-RED)**  
+  https://github.com/steffsplace/Charging_LoadMgmt_NodeRED
+
 
 Related engineering documentation is maintained in  
 **`energy/README.md`**.
