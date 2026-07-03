@@ -1,0 +1,250 @@
+[
+    {
+        "id": "flow_time_demo",
+        "type": "tab",
+        "label": "MQTT Time Demo",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "inject_time_7s",
+        "type": "inject",
+        "z": "flow_time_demo",
+        "name": "Every 7 seconds",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "7",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "topic": "iot/time",
+        "payload": "",
+        "payloadType": "date",
+        "x": 160,
+        "y": 100,
+        "wires": [
+            [
+                "format_time"
+            ]
+        ]
+    },
+    {
+        "id": "format_time",
+        "type": "function",
+        "z": "flow_time_demo",
+        "name": "Format time",
+        "func": "const now = new Date(msg.payload);\nmsg.topic = \"iot/time\";\nmsg.payload = now.toLocaleString();\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "x": 370,
+        "y": 100,
+        "wires": [
+            [
+                "mqtt_publish_time"
+            ]
+        ]
+    },
+    {
+        "id": "mqtt_publish_time",
+        "type": "mqtt out",
+        "z": "flow_time_demo",
+        "name": "Publish time",
+        "topic": "iot/time",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "mqtt_broker_mosquitto",
+        "x": 590,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "mqtt_subscribe_time",
+        "type": "mqtt in",
+        "z": "flow_time_demo",
+        "name": "Subscribe time",
+        "topic": "iot/time",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "mqtt_broker_mosquitto",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 160,
+        "y": 220,
+        "wires": [
+            [
+                "debug_time",
+                "dashboard_time",
+                "save_latest_time"
+            ]
+        ]
+    },
+    {
+        "id": "debug_time",
+        "type": "debug",
+        "z": "flow_time_demo",
+        "name": "MQTT time debug",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 410,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "dashboard_time",
+        "type": "ui_text",
+        "z": "flow_time_demo",
+        "group": "dashboard_group_time",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "Dashboard time",
+        "label": "MQTT time",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 410,
+        "y": 230,
+        "wires": []
+    },
+    {
+        "id": "save_latest_time",
+        "type": "function",
+        "z": "flow_time_demo",
+        "name": "Save latest time",
+        "func": "flow.set(\"latestTime\", msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "x": 410,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "http_time",
+        "type": "http in",
+        "z": "flow_time_demo",
+        "name": "HTTP time page",
+        "url": "/time",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 380,
+        "wires": [
+            [
+                "make_http_page"
+            ]
+        ]
+    },
+    {
+        "id": "make_http_page",
+        "type": "function",
+        "z": "flow_time_demo",
+        "name": "Make HTML page",
+        "func": "const latest = flow.get(\"latestTime\") || \"No MQTT time received yet\";\nmsg.payload = `\n<!DOCTYPE html>\n<html>\n<head>\n  <title>Node-RED MQTT Time</title>\n  <meta http-equiv=\"refresh\" content=\"7\">\n</head>\n<body style=\"font-family: Arial; padding: 30px;\">\n  <h1>MQTT Time</h1>\n  <p style=\"font-size: 24px;\">${latest}</p>\n  <p>This page refreshes every 7 seconds.</p>\n</body>\n</html>`;\nmsg.headers = { \"Content-Type\": \"text/html\" };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "x": 400,
+        "y": 380,
+        "wires": [
+            [
+                "http_response_time"
+            ]
+        ]
+    },
+    {
+        "id": "http_response_time",
+        "type": "http response",
+        "z": "flow_time_demo",
+        "name": "HTTP response",
+        "statusCode": "",
+        "headers": {},
+        "x": 630,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "1cb24c6932f5e644",
+        "type": "comment",
+        "z": "flow_time_demo",
+        "name": "Zeit muss gemäss Doku im Container angepasst werden",
+        "info": "",
+        "x": 740,
+        "y": 230,
+        "wires": []
+    },
+    {
+        "id": "mqtt_broker_mosquitto",
+        "type": "mqtt-broker",
+        "name": "Mosquitto Docker",
+        "broker": "mosquitto",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "dashboard_group_time",
+        "type": "ui_group",
+        "name": "Time",
+        "tab": "dashboard_tab_time",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "dashboard_tab_time",
+        "type": "ui_tab",
+        "name": "IoT",
+        "icon": "dashboard",
+        "order": 4,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "44754db0422bbe9a",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-dashboard": "3.6.6"
+        }
+    }
+]

@@ -1,0 +1,201 @@
+[
+    {
+        "id": "c3cbbfd26c865c4d",
+        "type": "tab",
+        "label": "Flow 5",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "trigger_temp",
+        "type": "inject",
+        "z": "c3cbbfd26c865c4d",
+        "name": "Alle 10s",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "10",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 100,
+        "y": 180,
+        "wires": [
+            [
+                "read_cpu_temp"
+            ]
+        ]
+    },
+    {
+        "id": "read_cpu_temp",
+        "type": "exec",
+        "z": "c3cbbfd26c865c4d",
+        "command": "cat /sys/class/thermal/thermal_zone0/temp",
+        "addpay": "",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "Lese CPU Temp",
+        "x": 270,
+        "y": 180,
+        "wires": [
+            [
+                "hysteresis_logic"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "hysteresis_logic",
+        "type": "function",
+        "z": "c3cbbfd26c865c4d",
+        "name": "Hysterese (55°C / 45°C)",
+        "func": "let rawTemp = String(msg.payload).trim();\nlet temp = parseFloat(rawTemp) / 1000;\n\nlet fanMsg = null;\n\nif (!isNaN(temp)) {\n    // Wenn zu heiß: Sende JEDES MAL \"true\"\n    if (temp >= 55.0) {\n        fanMsg = { payload: true };\n    } \n    // Wenn kühl genug: Sende JEDES MAL \"false\"\n    else if (temp <= 45.0) {\n        fanMsg = { payload: false };\n    }\n}\n\nlet tempMsg = !isNaN(temp) ? { payload: temp } : null;\n\n// Output 1: Dashboard | Output 2: Relais\nreturn [tempMsg, fanMsg];",
+        "outputs": 2,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 180,
+        "wires": [
+            [
+                "ui_gauge_temp"
+            ],
+            [
+                "modbus_write_fan"
+            ]
+        ]
+    },
+    {
+        "id": "ui_gauge_temp",
+        "type": "ui_gauge",
+        "z": "c3cbbfd26c865c4d",
+        "name": "Dashboard Tacho",
+        "group": "cd829517515dbd33",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Raspberry Pi CPU",
+        "label": "°C",
+        "format": "{{value | number:1}}",
+        "min": 30,
+        "max": 80,
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "55",
+        "seg2": "70",
+        "diff": false,
+        "className": "",
+        "x": 740,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "modbus_write_fan",
+        "type": "modbus-write",
+        "z": "c3cbbfd26c865c4d",
+        "name": "Relais 8 (Lüfter)",
+        "showStatusActivities": false,
+        "showErrors": true,
+        "showWarnings": true,
+        "unitid": "1",
+        "dataType": "Coil",
+        "adr": "7",
+        "quantity": "1",
+        "server": "modbus_client_waveshare",
+        "emptyMsgOnFail": false,
+        "keepMsgProperties": false,
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "x": 730,
+        "y": 200,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "3ae4ec63f2914efa",
+        "type": "comment",
+        "z": "c3cbbfd26c865c4d",
+        "name": "CPU - Lüfter MQTT",
+        "info": "",
+        "x": 950,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "cd829517515dbd33",
+        "type": "ui_group",
+        "name": "Standard",
+        "tab": "3a5b1fce7075535e",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "modbus_client_waveshare",
+        "type": "modbus-client",
+        "name": "Waveshare Relais",
+        "clienttype": "tcp",
+        "bufferCommands": true,
+        "stateLogEnabled": false,
+        "queueLogEnabled": false,
+        "failureLogEnabled": true,
+        "tcpHost": "192.168.178.197",
+        "tcpPort": "502",
+        "tcpType": "DEFAULT",
+        "serialPort": "/dev/ttyUSB",
+        "serialType": "RTU-BUFFERD",
+        "serialBaudrate": "9600",
+        "serialDatabits": "8",
+        "serialStopbits": "1",
+        "serialParity": "none",
+        "serialConnectionDelay": "100",
+        "serialAsciiResponseStartDelimiter": "",
+        "unit_id": 1,
+        "commandDelay": 1,
+        "clientTimeout": 1000,
+        "reconnectOnTimeout": true,
+        "reconnectTimeout": 2000,
+        "parallelUnitIdsAllowed": true,
+        "showErrors": false,
+        "showWarnings": true,
+        "showLogs": true
+    },
+    {
+        "id": "3a5b1fce7075535e",
+        "type": "ui_tab",
+        "name": "MQTT Heizung",
+        "icon": "fa-rss",
+        "order": 3,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "118fe4733cb3b634",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-dashboard": "3.6.6",
+            "node-red-contrib-modbus": "5.45.2"
+        }
+    }
+]

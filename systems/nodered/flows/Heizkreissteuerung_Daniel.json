@@ -1,0 +1,1378 @@
+[
+    {
+        "id": "5a33e15bda1a51d2",
+        "type": "tab",
+        "label": "Flow 6",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "447ad15379e3d73f",
+        "type": "ui_toast",
+        "z": "5a33e15bda1a51d2",
+        "position": "top right",
+        "displayTime": "5",
+        "highlight": "red",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "Frostalarm HK1",
+        "name": "Frost Warnung",
+        "x": 1070,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "edf209a23c51ba08",
+        "type": "ui_gauge",
+        "z": "5a33e15bda1a51d2",
+        "name": "",
+        "group": "b0f883918b3d809b",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "VL 1 Isttemperatur",
+        "label": "°C",
+        "format": "{{value}}",
+        "min": "0",
+        "max": "70",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 1080,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "73906ad78652ddaa",
+        "type": "mqtt in",
+        "z": "5a33e15bda1a51d2",
+        "name": "",
+        "topic": "heating/temperature/1",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "mqtt_broker_mosquitto",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 600,
+        "y": 300,
+        "wires": [
+            [
+                "e723790ac55cda3b"
+            ]
+        ]
+    },
+    {
+        "id": "e723790ac55cda3b",
+        "type": "function",
+        "z": "5a33e15bda1a51d2",
+        "name": "function 1",
+        "func": "msg.payload = Math.round(msg.payload / 20);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 300,
+        "wires": [
+            [
+                "edf209a23c51ba08"
+            ]
+        ]
+    },
+    {
+        "id": "0987d315f6f6bde4",
+        "type": "mqtt out",
+        "z": "5a33e15bda1a51d2",
+        "name": "Solltemperatur an Steuerung",
+        "topic": "heating/target/1",
+        "qos": "1",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "mqtt_broker_mosquitto",
+        "x": 1110,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "b373ce10d818ba39",
+        "type": "ui_time_scheduler",
+        "z": "5a33e15bda1a51d2",
+        "group": "ca16940d75533091",
+        "name": "",
+        "startDay": "1",
+        "refresh": 60,
+        "devices": [
+            "HK 1",
+            "HK 2",
+            "HK 3"
+        ],
+        "singleOff": false,
+        "onlySendChange": false,
+        "customPayload": false,
+        "eventMode": false,
+        "eventOptions": [],
+        "sendTopic": true,
+        "lat": "",
+        "lon": "",
+        "customContextStore": "",
+        "outputs": 4,
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "x": 180,
+        "y": 440,
+        "wires": [
+            [
+                "c11c2c5835e50788"
+            ],
+            [
+                "032314a3c0e77d45"
+            ],
+            [
+                "e3278b129cb65451"
+            ],
+            [
+                "6d916e7df4678a23"
+            ]
+        ]
+    },
+    {
+        "id": "c11c2c5835e50788",
+        "type": "file",
+        "z": "5a33e15bda1a51d2",
+        "name": "Timer Config",
+        "filename": "timer.config",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 80,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "397fcea650762153",
+        "type": "inject",
+        "z": "5a33e15bda1a51d2",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 80,
+        "y": 530,
+        "wires": [
+            [
+                "90fa67cd12668e61"
+            ]
+        ]
+    },
+    {
+        "id": "90fa67cd12668e61",
+        "type": "file in",
+        "z": "5a33e15bda1a51d2",
+        "name": "",
+        "filename": "timer.config",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 80,
+        "y": 570,
+        "wires": [
+            [
+                "b373ce10d818ba39"
+            ]
+        ]
+    },
+    {
+        "id": "6eba6d7146400ff9",
+        "type": "inject",
+        "z": "5a33e15bda1a51d2",
+        "name": "Minuten-Tick",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "tick",
+        "x": 550,
+        "y": 240,
+        "wires": [
+            [
+                "032314a3c0e77d45"
+            ]
+        ]
+    },
+    {
+        "id": "6991241ee50e5e9f",
+        "type": "ui_switch",
+        "z": "5a33e15bda1a51d2",
+        "name": "Schalter Heizung",
+        "label": "<i class=\"fa fa-power-off\"></i> HK 1",
+        "tooltip": "",
+        "group": "ca16940d75533091",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "heizung/1",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "animate": true,
+        "className": "",
+        "x": 560,
+        "y": 120,
+        "wires": [
+            [
+                "032314a3c0e77d45"
+            ]
+        ]
+    },
+    {
+        "id": "daf86b426a69129d",
+        "type": "ui_slider",
+        "z": "5a33e15bda1a51d2",
+        "name": "Slider Aussentemperatur",
+        "label": "<i class=\"fa fa-thermometer-half\"></i> Aussentemperatur: {{value}}°C",
+        "tooltip": "",
+        "group": "ca16940d75533091",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "outs": "all",
+        "topic": "aussentemp",
+        "topicType": "str",
+        "min": "-25",
+        "max": "35",
+        "step": 1,
+        "className": "",
+        "x": 580,
+        "y": 160,
+        "wires": [
+            [
+                "032314a3c0e77d45",
+                "e3278b129cb65451",
+                "6d916e7df4678a23"
+            ]
+        ]
+    },
+    {
+        "id": "8dec0ec40e0384f1",
+        "type": "ui_slider",
+        "z": "5a33e15bda1a51d2",
+        "name": "Slider Frostschutz",
+        "label": "<i class=\"fa fa-snowflake-o\"></i> Frostschutz Limit: {{value}}°C",
+        "tooltip": "",
+        "group": "b0f883918b3d809b",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "outs": "all",
+        "topic": "frostschutz/1",
+        "topicType": "str",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "className": "",
+        "x": 560,
+        "y": 200,
+        "wires": [
+            [
+                "032314a3c0e77d45"
+            ]
+        ]
+    },
+    {
+        "id": "99c0330fa4b3acdf",
+        "type": "ui_numeric",
+        "z": "5a33e15bda1a51d2",
+        "name": "",
+        "label": "Sollwert bei 0°C Aussen",
+        "tooltip": "",
+        "group": "b0f883918b3d809b",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "wrap": false,
+        "passthru": true,
+        "topic": "soll0/1",
+        "topicType": "str",
+        "format": "{{value}}",
+        "min": 20,
+        "max": 70,
+        "step": 1,
+        "className": "",
+        "x": 560,
+        "y": 240,
+        "wires": [
+            [
+                "032314a3c0e77d45"
+            ]
+        ]
+    },
+    {
+        "id": "f245d7e1cb623175",
+        "type": "ui_numeric",
+        "z": "5a33e15bda1a51d2",
+        "name": "",
+        "label": "Sollwert bei 10°C Aussen",
+        "tooltip": "",
+        "group": "b0f883918b3d809b",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "wrap": false,
+        "passthru": true,
+        "topic": "soll10/1",
+        "topicType": "str",
+        "format": "{{value}}",
+        "min": 20,
+        "max": 70,
+        "step": 1,
+        "className": "",
+        "x": 560,
+        "y": 280,
+        "wires": [
+            [
+                "032314a3c0e77d45"
+            ]
+        ]
+    },
+    {
+        "id": "032314a3c0e77d45",
+        "type": "function",
+        "z": "5a33e15bda1a51d2",
+        "name": "Logik & Timer Heizkreis 1",
+        "func": "if (msg.topic === \"heizung/1\") flow.set(\"hk1_heizung\", msg.payload);\nelse if (msg.topic === \"aussentemp\") flow.set(\"global_aussen\", msg.payload);\nelse if (msg.topic === \"frostschutz/1\") flow.set(\"hk1_frost\", msg.payload);\nelse if (msg.topic === \"HK 1\") flow.set(\"hk1_timer\", msg.payload);\nelse if (msg.topic === \"soll0/1\") flow.set(\"hk1_soll0\", msg.payload);\nelse if (msg.topic === \"soll10/1\") flow.set(\"hk1_soll10\", msg.payload);\n\nvar heizung = flow.get(\"hk1_heizung\") || false;\nvar aussen = flow.get(\"global_aussen\") || 0;\nvar frost = flow.get(\"hk1_frost\");\nif (frost === undefined) frost = 3;\n\nvar soll0 = flow.get(\"hk1_soll0\");\nif (soll0 === undefined) soll0 = 40; // Default-Wert bei 0°C\nvar soll10 = flow.get(\"hk1_soll10\");\nif (soll10 === undefined) soll10 = 30; // Default-Wert bei 10°C\n\nvar timerRaw = flow.get(\"hk1_timer\");\nvar timerAktiv = (timerRaw === true || timerRaw === \"ON\" || timerRaw === \"on\" || timerRaw === 1);\n\n// Heizkurve linear berechnen: y = m*x + b\nvar m = (soll10 - soll0) / 10.0; // Steigung berechnen\nvar solltemp = (m * aussen) + soll0;\nsolltemp = Math.round(solltemp * 10) / 10; // Runden auf 1 Nachkommastelle\n\nif (solltemp > 65) solltemp = 65;\nif (solltemp < 20) solltemp = 20;\n\nvar statusText = \"Pumpe AUS\";\nvar isFrostActive = (aussen < frost);\nvar wasFrostActive = flow.get(\"hk1_frost_active\") || false;\nvar toastMsg = null;\n\nif (isFrostActive && !wasFrostActive) {\n    toastMsg = { payload: \"ACHTUNG: Frostgefahr! Frostschutz-Pumpe HK1 aktiviert.\" };\n}\nflow.set(\"hk1_frost_active\", isFrostActive);\n\nif (isFrostActive) statusText = \"Pumpe EIN (Frostschutz aktiv!)\";\nelse if (heizung && timerAktiv) statusText = \"Pumpe EIN (Tagbetrieb)\";\nelse if (heizung && !timerAktiv) statusText = \"Pumpe AUS (Nachtabsenkung)\";\nelse statusText = \"Pumpe AUS (Hauptschalter AUS)\";\n\nreturn [\n    { payload: statusText }, \n    { payload: solltemp },\n    toastMsg,\n    null\n];",
+        "outputs": 4,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 180,
+        "wires": [
+            [
+                "939202e90006442e"
+            ],
+            [
+                "a59d7bc8c186cee2",
+                "c675be93a11d7807",
+                "0987d315f6f6bde4"
+            ],
+            [
+                "447ad15379e3d73f"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "939202e90006442e",
+        "type": "ui_text",
+        "z": "5a33e15bda1a51d2",
+        "group": "b0f883918b3d809b",
+        "order": 1,
+        "width": "6",
+        "height": "1",
+        "name": "",
+        "label": "Status Heizpumpe 1:",
+        "format": "<b>{{msg.payload}}</b>",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 1090,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "a59d7bc8c186cee2",
+        "type": "ui_gauge",
+        "z": "5a33e15bda1a51d2",
+        "name": "",
+        "group": "b0f883918b3d809b",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "VL 1 Solltemperatur",
+        "label": "°C",
+        "format": "{{value}}",
+        "min": "0",
+        "max": "70",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 1080,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "c675be93a11d7807",
+        "type": "ui_chart",
+        "z": "5a33e15bda1a51d2",
+        "name": "Verlauf Solltemperatur",
+        "group": "b0f883918b3d809b",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "label": "Verlauf Solltemperatur",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "Warte auf Daten...",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "70",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1090,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d09e4da9d6258b43",
+        "type": "ui_toast",
+        "z": "5a33e15bda1a51d2",
+        "position": "top right",
+        "displayTime": "5",
+        "highlight": "red",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "Frostalarm",
+        "name": "Frost Warnung HK2",
+        "x": 1080,
+        "y": 610,
+        "wires": []
+    },
+    {
+        "id": "373bfe82961715ef",
+        "type": "ui_gauge",
+        "z": "5a33e15bda1a51d2",
+        "name": "",
+        "group": "68029eb88653c103",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "VL 2 Isttemperatur",
+        "label": "°C",
+        "format": "{{value}}",
+        "min": "0",
+        "max": "70",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 1080,
+        "y": 650,
+        "wires": []
+    },
+    {
+        "id": "d6161708667e4563",
+        "type": "mqtt in",
+        "z": "5a33e15bda1a51d2",
+        "name": "",
+        "topic": "heating/temperature/2",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "mqtt_broker_mosquitto",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 600,
+        "y": 650,
+        "wires": [
+            [
+                "0bb4fe7116e8f132"
+            ]
+        ]
+    },
+    {
+        "id": "0bb4fe7116e8f132",
+        "type": "function",
+        "z": "5a33e15bda1a51d2",
+        "name": "function 2",
+        "func": "msg.payload = Math.round(msg.payload / 20);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 650,
+        "wires": [
+            [
+                "373bfe82961715ef"
+            ]
+        ]
+    },
+    {
+        "id": "bc0a81c6b705d865",
+        "type": "mqtt out",
+        "z": "5a33e15bda1a51d2",
+        "name": "Solltemperatur an Steuerung",
+        "topic": "heating/target/2",
+        "qos": "1",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "mqtt_broker_mosquitto",
+        "x": 1110,
+        "y": 530,
+        "wires": []
+    },
+    {
+        "id": "f1c383375116aa43",
+        "type": "inject",
+        "z": "5a33e15bda1a51d2",
+        "name": "Minuten-Tick",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "tick",
+        "x": 550,
+        "y": 590,
+        "wires": [
+            [
+                "e3278b129cb65451"
+            ]
+        ]
+    },
+    {
+        "id": "27b57b6ddaf7da7d",
+        "type": "ui_switch",
+        "z": "5a33e15bda1a51d2",
+        "name": "Schalter Heizung",
+        "label": "<i class=\"fa fa-power-off\"></i> HK 2",
+        "tooltip": "",
+        "group": "ca16940d75533091",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "heizung/2",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "animate": true,
+        "className": "",
+        "x": 560,
+        "y": 470,
+        "wires": [
+            [
+                "e3278b129cb65451"
+            ]
+        ]
+    },
+    {
+        "id": "22696d14a266b34e",
+        "type": "ui_slider",
+        "z": "5a33e15bda1a51d2",
+        "name": "Slider Frostschutz",
+        "label": "<i class=\"fa fa-snowflake-o\"></i> Frostschutz Limit: {{value}}°C",
+        "tooltip": "",
+        "group": "68029eb88653c103",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "outs": "all",
+        "topic": "frostschutz/2",
+        "topicType": "str",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "className": "",
+        "x": 560,
+        "y": 550,
+        "wires": [
+            [
+                "e3278b129cb65451"
+            ]
+        ]
+    },
+    {
+        "id": "28d69af401fc315e",
+        "type": "ui_numeric",
+        "z": "5a33e15bda1a51d2",
+        "name": "",
+        "label": "Sollwert bei 0°C Aussen",
+        "tooltip": "",
+        "group": "68029eb88653c103",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "wrap": false,
+        "passthru": true,
+        "topic": "soll0/2",
+        "topicType": "str",
+        "format": "{{value}}",
+        "min": 20,
+        "max": 70,
+        "step": 1,
+        "className": "",
+        "x": 560,
+        "y": 590,
+        "wires": [
+            [
+                "e3278b129cb65451"
+            ]
+        ]
+    },
+    {
+        "id": "7587110285ce70e6",
+        "type": "ui_numeric",
+        "z": "5a33e15bda1a51d2",
+        "name": "",
+        "label": "Sollwert bei 10°C Aussen",
+        "tooltip": "",
+        "group": "68029eb88653c103",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "wrap": false,
+        "passthru": true,
+        "topic": "soll10/2",
+        "topicType": "str",
+        "format": "{{value}}",
+        "min": 20,
+        "max": 70,
+        "step": 1,
+        "className": "",
+        "x": 560,
+        "y": 630,
+        "wires": [
+            [
+                "e3278b129cb65451"
+            ]
+        ]
+    },
+    {
+        "id": "e3278b129cb65451",
+        "type": "function",
+        "z": "5a33e15bda1a51d2",
+        "name": "Logik & Timer Heizkreis 2",
+        "func": "if (msg.topic === \"heizung/2\") flow.set(\"hk2_heizung\", msg.payload);\nelse if (msg.topic === \"aussentemp\") flow.set(\"global_aussen\", msg.payload);\nelse if (msg.topic === \"frostschutz/2\") flow.set(\"hk2_frost\", msg.payload);\nelse if (msg.topic === \"HK 2\") flow.set(\"hk2_timer\", msg.payload);\nelse if (msg.topic === \"soll0/2\") flow.set(\"hk2_soll0\", msg.payload);\nelse if (msg.topic === \"soll10/2\") flow.set(\"hk2_soll10\", msg.payload);\n\nvar heizung = flow.get(\"hk2_heizung\") || false;\nvar aussen = flow.get(\"global_aussen\") || 0;\nvar frost = flow.get(\"hk2_frost\");\nif (frost === undefined) frost = 3;\n\nvar soll0 = flow.get(\"hk2_soll0\");\nif (soll0 === undefined) soll0 = 40; // Default-Wert bei 0°C\nvar soll10 = flow.get(\"hk2_soll10\");\nif (soll10 === undefined) soll10 = 30; // Default-Wert bei 10°C\n\nvar timerRaw = flow.get(\"hk2_timer\");\nvar timerAktiv = (timerRaw === true || timerRaw === \"ON\" || timerRaw === \"on\" || timerRaw === 1);\n\n// Heizkurve linear berechnen: y = m*x + b\nvar m = (soll10 - soll0) / 10.0;\nvar solltemp = (m * aussen) + soll0;\nsolltemp = Math.round(solltemp * 10) / 10;\n\nif (solltemp > 65) solltemp = 65;\nif (solltemp < 20) solltemp = 20;\n\nvar statusText = \"Pumpe AUS\";\nvar isFrostActive = (aussen < frost);\nvar wasFrostActive = flow.get(\"hk2_frost_active\") || false;\nvar toastMsg = null;\n\nif (isFrostActive && !wasFrostActive) {\n    toastMsg = { payload: \"ACHTUNG: Frostgefahr! Frostschutz-Pumpe HK2 aktiviert.\" };\n}\nflow.set(\"hk2_frost_active\", isFrostActive);\n\nif (isFrostActive) statusText = \"Pumpe EIN (Frostschutz aktiv!)\";\nelse if (heizung && timerAktiv) statusText = \"Pumpe EIN (Tagbetrieb)\";\nelse if (heizung && !timerAktiv) statusText = \"Pumpe AUS (Nachtabsenkung)\";\nelse statusText = \"Pumpe AUS (Hauptschalter AUS)\";\n\nreturn [\n    { payload: statusText }, \n    { payload: solltemp },\n    toastMsg,\n    null\n];",
+        "outputs": 4,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 530,
+        "wires": [
+            [
+                "58d76263c9124477"
+            ],
+            [
+                "a38116d9860b50da",
+                "12bd5b7b4deb4b83",
+                "bc0a81c6b705d865"
+            ],
+            [
+                "d09e4da9d6258b43"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "58d76263c9124477",
+        "type": "ui_text",
+        "z": "5a33e15bda1a51d2",
+        "group": "68029eb88653c103",
+        "order": 1,
+        "width": "6",
+        "height": "1",
+        "name": "",
+        "label": "Status Heizpumpe 2:",
+        "format": "<b>{{msg.payload}}</b>",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 1090,
+        "y": 450,
+        "wires": []
+    },
+    {
+        "id": "a38116d9860b50da",
+        "type": "ui_gauge",
+        "z": "5a33e15bda1a51d2",
+        "name": "",
+        "group": "68029eb88653c103",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "VL 2 Solltemperatur",
+        "label": "°C",
+        "format": "{{value}}",
+        "min": "0",
+        "max": "70",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 1080,
+        "y": 490,
+        "wires": []
+    },
+    {
+        "id": "12bd5b7b4deb4b83",
+        "type": "ui_chart",
+        "z": "5a33e15bda1a51d2",
+        "name": "Verlauf Solltemperatur",
+        "group": "68029eb88653c103",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "label": "Verlauf Solltemperatur",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "Warte auf Daten...",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "70",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1090,
+        "y": 570,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "dff0235c05e1c237",
+        "type": "ui_toast",
+        "z": "5a33e15bda1a51d2",
+        "position": "top right",
+        "displayTime": "5",
+        "highlight": "red",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "Frostalarm",
+        "name": "Frost Warnung HK3",
+        "x": 1080,
+        "y": 950,
+        "wires": []
+    },
+    {
+        "id": "6ceb4dd376b7e779",
+        "type": "ui_gauge",
+        "z": "5a33e15bda1a51d2",
+        "name": "",
+        "group": "38d83166980277f4",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "VL 3 Isttemperatur",
+        "label": "°C",
+        "format": "{{value}}",
+        "min": "0",
+        "max": "70",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 1080,
+        "y": 990,
+        "wires": []
+    },
+    {
+        "id": "ce7972e9654b659c",
+        "type": "mqtt in",
+        "z": "5a33e15bda1a51d2",
+        "name": "",
+        "topic": "heating/temperature/3",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "mqtt_broker_mosquitto",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 600,
+        "y": 990,
+        "wires": [
+            [
+                "9991938a8e809738"
+            ]
+        ]
+    },
+    {
+        "id": "9991938a8e809738",
+        "type": "function",
+        "z": "5a33e15bda1a51d2",
+        "name": "function 3",
+        "func": "msg.payload = Math.round(msg.payload / 20);\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 990,
+        "wires": [
+            [
+                "6ceb4dd376b7e779"
+            ]
+        ]
+    },
+    {
+        "id": "6db22c2d30343c4d",
+        "type": "mqtt out",
+        "z": "5a33e15bda1a51d2",
+        "name": "Solltemperatur an Steuerung",
+        "topic": "heating/target/3",
+        "qos": "1",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "mqtt_broker_mosquitto",
+        "x": 1110,
+        "y": 870,
+        "wires": []
+    },
+    {
+        "id": "49589fa8fdf0f35a",
+        "type": "inject",
+        "z": "5a33e15bda1a51d2",
+        "name": "Minuten-Tick",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "tick",
+        "x": 550,
+        "y": 930,
+        "wires": [
+            [
+                "6d916e7df4678a23"
+            ]
+        ]
+    },
+    {
+        "id": "67ada74a53f11497",
+        "type": "ui_switch",
+        "z": "5a33e15bda1a51d2",
+        "name": "Schalter Heizung",
+        "label": "<i class=\"fa fa-power-off\"></i> HK 3",
+        "tooltip": "",
+        "group": "ca16940d75533091",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "heizung/3",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "animate": true,
+        "className": "",
+        "x": 560,
+        "y": 810,
+        "wires": [
+            [
+                "6d916e7df4678a23"
+            ]
+        ]
+    },
+    {
+        "id": "3920314d5f6034f3",
+        "type": "ui_slider",
+        "z": "5a33e15bda1a51d2",
+        "name": "Slider Frostschutz",
+        "label": "<i class=\"fa fa-snowflake-o\"></i> Frostschutz Limit: {{value}}°C",
+        "tooltip": "",
+        "group": "38d83166980277f4",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "outs": "all",
+        "topic": "frostschutz/3",
+        "topicType": "str",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "className": "",
+        "x": 560,
+        "y": 890,
+        "wires": [
+            [
+                "6d916e7df4678a23"
+            ]
+        ]
+    },
+    {
+        "id": "b3d0d90732e6b583",
+        "type": "ui_numeric",
+        "z": "5a33e15bda1a51d2",
+        "name": "",
+        "label": "Sollwert bei 0°C Aussen",
+        "tooltip": "",
+        "group": "38d83166980277f4",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "wrap": false,
+        "passthru": true,
+        "topic": "soll0/3",
+        "topicType": "str",
+        "format": "{{value}}",
+        "min": 20,
+        "max": 70,
+        "step": 1,
+        "className": "",
+        "x": 560,
+        "y": 930,
+        "wires": [
+            [
+                "6d916e7df4678a23"
+            ]
+        ]
+    },
+    {
+        "id": "ddb65160b7f815e4",
+        "type": "ui_numeric",
+        "z": "5a33e15bda1a51d2",
+        "name": "",
+        "label": "Sollwert bei 10°C Aussen",
+        "tooltip": "",
+        "group": "38d83166980277f4",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "wrap": false,
+        "passthru": true,
+        "topic": "soll10/3",
+        "topicType": "str",
+        "format": "{{value}}",
+        "min": 20,
+        "max": 70,
+        "step": 1,
+        "className": "",
+        "x": 560,
+        "y": 970,
+        "wires": [
+            [
+                "6d916e7df4678a23"
+            ]
+        ]
+    },
+    {
+        "id": "6d916e7df4678a23",
+        "type": "function",
+        "z": "5a33e15bda1a51d2",
+        "name": "Logik & Timer Heizkreis 3",
+        "func": "if (msg.topic === \"heizung/3\") flow.set(\"hk3_heizung\", msg.payload);\nelse if (msg.topic === \"aussentemp\") flow.set(\"global_aussen\", msg.payload);\nelse if (msg.topic === \"frostschutz/3\") flow.set(\"hk3_frost\", msg.payload);\nelse if (msg.topic === \"HK 3\") flow.set(\"hk3_timer\", msg.payload);\nelse if (msg.topic === \"soll0/3\") flow.set(\"hk3_soll0\", msg.payload);\nelse if (msg.topic === \"soll10/3\") flow.set(\"hk3_soll10\", msg.payload);\n\nvar heizung = flow.get(\"hk3_heizung\") || false;\nvar aussen = flow.get(\"global_aussen\") || 0;\nvar frost = flow.get(\"hk3_frost\");\nif (frost === undefined) frost = 3;\n\nvar soll0 = flow.get(\"hk3_soll0\");\nif (soll0 === undefined) soll0 = 40; // Default-Wert bei 0°C\nvar soll10 = flow.get(\"hk3_soll10\");\nif (soll10 === undefined) soll10 = 30; // Default-Wert bei 10°C\n\nvar timerRaw = flow.get(\"hk3_timer\");\nvar timerAktiv = (timerRaw === true || timerRaw === \"ON\" || timerRaw === \"on\" || timerRaw === 1);\n\n// Heizkurve linear berechnen: y = m*x + b\nvar m = (soll10 - soll0) / 10.0;\nvar solltemp = (m * aussen) + soll0;\nsolltemp = Math.round(solltemp * 10) / 10;\n\nif (solltemp > 65) solltemp = 65;\nif (solltemp < 20) solltemp = 20;\n\nvar statusText = \"Pumpe AUS\";\nvar isFrostActive = (aussen < frost);\nvar wasFrostActive = flow.get(\"hk3_frost_active\") || false;\nvar toastMsg = null;\n\nif (isFrostActive && !wasFrostActive) {\n    toastMsg = { payload: \"ACHTUNG: Frostgefahr! Frostschutz-Pumpe HK3 aktiviert.\" };\n}\nflow.set(\"hk3_frost_active\", isFrostActive);\n\nif (isFrostActive) statusText = \"Pumpe EIN (Frostschutz aktiv!)\";\nelse if (heizung && timerAktiv) statusText = \"Pumpe EIN (Tagbetrieb)\";\nelse if (heizung && !timerAktiv) statusText = \"Pumpe AUS (Nachtabsenkung)\";\nelse statusText = \"Pumpe AUS (Hauptschalter AUS)\";\n\nreturn [\n    { payload: statusText }, \n    { payload: solltemp },\n    toastMsg,\n    null\n];",
+        "outputs": 4,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 870,
+        "wires": [
+            [
+                "7bc37696403920a6"
+            ],
+            [
+                "e1d5caee7776f836",
+                "dee09bafdee6465b",
+                "6db22c2d30343c4d"
+            ],
+            [
+                "dff0235c05e1c237"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "7bc37696403920a6",
+        "type": "ui_text",
+        "z": "5a33e15bda1a51d2",
+        "group": "38d83166980277f4",
+        "order": 1,
+        "width": "6",
+        "height": "1",
+        "name": "",
+        "label": "Status Heizpumpe 3:",
+        "format": "<b>{{msg.payload}}</b>",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 1090,
+        "y": 790,
+        "wires": []
+    },
+    {
+        "id": "e1d5caee7776f836",
+        "type": "ui_gauge",
+        "z": "5a33e15bda1a51d2",
+        "name": "",
+        "group": "38d83166980277f4",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "VL 3 Solltemperatur",
+        "label": "°C",
+        "format": "{{value}}",
+        "min": "0",
+        "max": "70",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 1080,
+        "y": 830,
+        "wires": []
+    },
+    {
+        "id": "dee09bafdee6465b",
+        "type": "ui_chart",
+        "z": "5a33e15bda1a51d2",
+        "name": "Verlauf Solltemperatur",
+        "group": "38d83166980277f4",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "label": "Verlauf Solltemperatur",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "Warte auf Daten...",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "70",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1090,
+        "y": 910,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1856ed78b3bd2c89",
+        "type": "comment",
+        "z": "5a33e15bda1a51d2",
+        "name": "Beim Timestamp \"injizieren nach\" einstellen",
+        "info": "",
+        "x": 180,
+        "y": 610,
+        "wires": []
+    },
+    {
+        "id": "b0f883918b3d809b",
+        "type": "ui_group",
+        "name": "Ausgaben HK 1",
+        "tab": "dafccb90a7a3a7ed",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "mqtt_broker_mosquitto",
+        "type": "mqtt-broker",
+        "name": "Mosquitto Docker",
+        "broker": "mosquitto",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "ca16940d75533091",
+        "type": "ui_group",
+        "name": "Zentrale Steuerung",
+        "tab": "2f908bca1edf81ed",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "68029eb88653c103",
+        "type": "ui_group",
+        "name": "Ausgaben HK 2",
+        "tab": "d740741f29ecef53",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "38d83166980277f4",
+        "type": "ui_group",
+        "name": "Ausgaben HK 3",
+        "tab": "8588d905bd4c16ce",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "dafccb90a7a3a7ed",
+        "type": "ui_tab",
+        "name": "Heizkreis 1",
+        "icon": "dashboard",
+        "order": 7,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "2f908bca1edf81ed",
+        "type": "ui_tab",
+        "name": "Heizung Allgemein",
+        "icon": "settings",
+        "order": 6,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "d740741f29ecef53",
+        "type": "ui_tab",
+        "name": "Heizkreis 2",
+        "icon": "dashboard",
+        "order": 8,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "8588d905bd4c16ce",
+        "type": "ui_tab",
+        "name": "Heizkreis 3",
+        "icon": "dashboard",
+        "order": 9,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "010d89f57ad89e86",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-dashboard": "3.6.6",
+            "node-red-contrib-ui-time-scheduler": "1.17.2"
+        }
+    }
+]

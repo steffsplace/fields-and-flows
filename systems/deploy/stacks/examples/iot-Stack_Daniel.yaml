@@ -1,0 +1,40 @@
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    configs:
+      - source: mosquitto_config
+        target: /mosquitto/config/mosquitto.conf
+    volumes:
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+
+  nodered:
+    image: nodered/node-red:latest
+    container_name: nodered
+    restart: unless-stopped
+    ports:
+      - "1880:1880"
+    volumes:
+      - nodered_data:/data
+    depends_on:
+      - mosquitto
+
+configs:
+  mosquitto_config:
+    content: |
+      listener 1883
+      allow_anonymous true
+
+      listener 9001
+      protocol websockets
+      allow_anonymous true
+
+volumes:
+  mosquitto_data:
+  mosquitto_log:
+  nodered_data:

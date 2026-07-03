@@ -1,0 +1,363 @@
+[
+    {
+        "id": "e9c238bd3128efbf",
+        "type": "tab",
+        "label": "Flow 4",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "automatik_switch",
+        "type": "ui_switch",
+        "z": "e9c238bd3128efbf",
+        "name": "Automatik Ein/Aus",
+        "label": "Melodie",
+        "tooltip": "",
+        "group": "cd829517515dbd33",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "automatik",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 130,
+        "y": 140,
+        "wires": [
+            [
+                "flow_context_gate",
+                "trigger_loop"
+            ]
+        ]
+    },
+    {
+        "id": "flow_context_gate",
+        "type": "function",
+        "z": "e9c238bd3128efbf",
+        "name": "Modus in Speicher sichern",
+        "func": "// Wir speichern den Zustand (true/false) im globalen Flow-Speicher\nflow.set(\"automatik_aktiv\", msg.payload);\n\n// Wenn ausgeschaltet, senden wir einen Reset-Befehl an die Schleife\nif (msg.payload === false) {\n    msg.payload = \"stop\";\n    return msg;\n}\nreturn null;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 140,
+        "wires": [
+            [
+                "trigger_loop",
+                "all_off_rectify"
+            ]
+        ]
+    },
+    {
+        "id": "trigger_loop",
+        "type": "trigger",
+        "z": "e9c238bd3128efbf",
+        "op1": "loop",
+        "op2": "0",
+        "op1type": "str",
+        "op2type": "str",
+        "duration": "150",
+        "extend": false,
+        "overrideDelay": false,
+        "units": "ms",
+        "reset": "stop",
+        "bytopic": "all",
+        "topic": "topic",
+        "outputs": 1,
+        "x": 130,
+        "y": 240,
+        "wires": [
+            [
+                "knight_rider_logic"
+            ]
+        ]
+    },
+    {
+        "id": "knight_rider_logic",
+        "type": "function",
+        "z": "e9c238bd3128efbf",
+        "name": "Knight Rider Logik (Modbus)",
+        "func": "// Aktuellen Schritt aus dem Speicher holen (oder bei 0 starten)\nlet schritt = context.get(\"schritt\") || 0;\nlet richtung = context.get(\"richtung\") || 1; // 1 = vorwärts, -1 = rückwärts\n\n// Array für alle 8 Relais vorbereiten (Standard alle aus)\nlet relaisStati = [false, false, false, false, false, false, false, false];\n\n// Nur das aktuelle Relais einschalten\nrelaisStati[schritt] = true;\n\n// Nächsten Schritt berechnen\nschritt += richtung;\n\n// Wenn wir am Ende (Relais 8) angekommen sind, Richtung umkehren\nif (schritt >= 7) {\n    schritt = 7;\n    richtung = -1;\n}\n// Wenn wir am Anfang (Relais 1) angekommen sind, Richtung umkehren\nif (schritt <= 0) {\n    schritt = 0;\n    richtung = 1;\n}\n\n// Werte für den nächsten Durchlauf speichern\ncontext.set(\"schritt\", schritt);\ncontext.set(\"richtung\", richtung);\n\n// Modbus-Anweisung zusammenbauen (FC15: Write Multiple Coils)\nmsg.payload = relaisStati;\nmsg.topic = \"writeMultiple\";\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 240,
+        "wires": [
+            [
+                "modbus_write_multiple",
+                "trigger_loop"
+            ]
+        ]
+    },
+    {
+        "id": "modbus_write_multiple",
+        "type": "modbus-write",
+        "z": "e9c238bd3128efbf",
+        "name": "Alle Relais schreiben",
+        "showStatusActivities": false,
+        "showErrors": true,
+        "showWarnings": true,
+        "unitid": "1",
+        "dataType": "MCoils",
+        "adr": "0",
+        "quantity": "8",
+        "server": "modbus_client_waveshare",
+        "emptyMsgOnFail": false,
+        "keepMsgProperties": false,
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "x": 700,
+        "y": 240,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "all_off_rectify",
+        "type": "function",
+        "z": "e9c238bd3128efbf",
+        "name": "Beim Stoppen alle AUS",
+        "func": "// Setzt alle Relais zurück, damit nach dem Stoppen keins an bleibt\nmsg.payload = [false, false, false, false, false, false, false, false];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 190,
+        "wires": [
+            [
+                "modbus_write_multiple"
+            ]
+        ]
+    },
+    {
+        "id": "mqtt_manuell_in",
+        "type": "mqtt in",
+        "z": "e9c238bd3128efbf",
+        "name": "Abo: LichtHeizraum (Manuell)",
+        "topic": "LichtHeizraum",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "mqtt_broker_mosquitto",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 140,
+        "y": 300,
+        "wires": [
+            [
+                "check_automatik_active"
+            ]
+        ]
+    },
+    {
+        "id": "check_automatik_active",
+        "type": "function",
+        "z": "e9c238bd3128efbf",
+        "name": "Prüfe ob Automatik aktiv",
+        "func": "// Wir schauen in den Flow-Speicher, ob die Automatik läuft\nlet automatikAktiv = flow.get(\"automatikAktiv\") || false;\n\n// Wenn die Automatik läuft, blockieren wir den manuellen Befehl (return null)\nif (automatikAktiv === true) {\n    return null;\n}\n\n// Wenn Automatik AUS ist, konvertieren wir den Befehl für Modbus\nif (msg.payload === \"true\" || msg.payload === true || msg.payload === 1 || msg.payload === \"1\") {\n    msg.payload = true;\n} else {\n    msg.payload = false;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 300,
+        "wires": [
+            [
+                "modbus_write_single_1"
+            ]
+        ]
+    },
+    {
+        "id": "modbus_write_single_1",
+        "type": "modbus-write",
+        "z": "e9c238bd3128efbf",
+        "name": "Relais 1 einzeln schalten",
+        "showStatusActivities": false,
+        "showErrors": true,
+        "showWarnings": true,
+        "unitid": "1",
+        "dataType": "Coil",
+        "adr": "0",
+        "quantity": "1",
+        "server": "modbus_client_waveshare",
+        "emptyMsgOnFail": false,
+        "keepMsgProperties": false,
+        "x": 710,
+        "y": 300,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "inject_automatik_on",
+        "type": "inject",
+        "z": "e9c238bd3128efbf",
+        "name": "Auto EIN (Test)",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "true",
+        "payloadType": "bool",
+        "x": 120,
+        "y": 70,
+        "wires": [
+            [
+                "flow_context_gate",
+                "trigger_loop"
+            ]
+        ]
+    },
+    {
+        "id": "inject_automatik_off",
+        "type": "inject",
+        "z": "e9c238bd3128efbf",
+        "name": "Auto AUS (Test)",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 120,
+        "y": 100,
+        "wires": [
+            [
+                "flow_context_gate",
+                "trigger_loop"
+            ]
+        ]
+    },
+    {
+        "id": "68d6d66aa05da60a",
+        "type": "comment",
+        "z": "e9c238bd3128efbf",
+        "name": "Melodie Spielerei vom Dashboard",
+        "info": "",
+        "x": 840,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "cd829517515dbd33",
+        "type": "ui_group",
+        "name": "Standard",
+        "tab": "3a5b1fce7075535e",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "modbus_client_waveshare",
+        "type": "modbus-client",
+        "name": "Waveshare Relais",
+        "clienttype": "tcp",
+        "bufferCommands": true,
+        "stateLogEnabled": false,
+        "queueLogEnabled": false,
+        "failureLogEnabled": true,
+        "tcpHost": "192.168.178.197",
+        "tcpPort": "502",
+        "tcpType": "DEFAULT",
+        "serialPort": "/dev/ttyUSB",
+        "serialType": "RTU-BUFFERD",
+        "serialBaudrate": "9600",
+        "serialDatabits": "8",
+        "serialStopbits": "1",
+        "serialParity": "none",
+        "serialConnectionDelay": "100",
+        "serialAsciiResponseStartDelimiter": "",
+        "unit_id": 1,
+        "commandDelay": 1,
+        "clientTimeout": 1000,
+        "reconnectOnTimeout": true,
+        "reconnectTimeout": 2000,
+        "parallelUnitIdsAllowed": true,
+        "showErrors": false,
+        "showWarnings": true,
+        "showLogs": true
+    },
+    {
+        "id": "mqtt_broker_mosquitto",
+        "type": "mqtt-broker",
+        "name": "Mosquitto Docker",
+        "broker": "mosquitto",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "3a5b1fce7075535e",
+        "type": "ui_tab",
+        "name": "MQTT Heizung",
+        "icon": "fa-rss",
+        "order": 3,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "e946a766ef5806ee",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-dashboard": "3.6.6",
+            "node-red-contrib-modbus": "5.45.2"
+        }
+    }
+]
