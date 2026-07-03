@@ -1,0 +1,495 @@
+[
+    {
+        "id": "tab_shelly_export",
+        "type": "tab",
+        "label": "Shelly Export zu CSV",
+        "disabled": false,
+        "info": "Liest alle 15 Minuten die 3 Phasen eines Shelly Pro 3EM aus Home Assistant aus und speichert sie in einer CSV Datei."
+    },
+    {
+        "id": "func_calc_total",
+        "type": "function",
+        "z": "tab_shelly_export",
+        "name": "Daten aufbereiten",
+        "func": "let now = new Date();\nlet timestamp = now.toLocaleString('de-CH');\n\n// Werte als Zahlen interpretieren (Fallback 0 falls Fehler)\nlet wertA = Number(msg.phaseA) || 0;\nlet wertB = Number(msg.phaseB) || 0;\nlet wertC = Number(msg.phaseC) || 0;\n\n// Payload für die CSV Node zusammenbauen\nmsg.payload = {\n    \"Zeitstempel\": timestamp,\n    \"Phase A (W)\": wertA,\n    \"Phase B (W)\": wertB,\n    \"Phase C (W)\": wertC,\n    \"Gesamt (W)\": wertA + wertB + wertC\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1110,
+        "y": 620,
+        "wires": [
+            [
+                "csv_formatter"
+            ]
+        ]
+    },
+    {
+        "id": "csv_formatter",
+        "type": "csv",
+        "z": "tab_shelly_export",
+        "name": "Zu CSV formatieren",
+        "sep": ";",
+        "hdrin": "",
+        "hdrout": "once",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": "",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 1320,
+        "y": 720,
+        "wires": [
+            [
+                "file_writer"
+            ]
+        ]
+    },
+    {
+        "id": "file_writer",
+        "type": "file",
+        "z": "tab_shelly_export",
+        "name": "Speichern in shelly_export.csv",
+        "filename": "/data/shelly_export.csv",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "false",
+        "encoding": "none",
+        "x": 1610,
+        "y": 640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "http_in_download",
+        "type": "http in",
+        "z": "tab_shelly_export",
+        "name": "Aufruf /download-shelly",
+        "url": "/download-shelly",
+        "method": "get",
+        "upload": false,
+        "skipBodyParsing": false,
+        "swaggerDoc": "",
+        "x": 320,
+        "y": 760,
+        "wires": [
+            [
+                "file_reader"
+            ]
+        ]
+    },
+    {
+        "id": "file_reader",
+        "type": "file in",
+        "z": "tab_shelly_export",
+        "name": "Datei lesen",
+        "filename": "/data/shelly_export.csv",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 530,
+        "y": 760,
+        "wires": [
+            [
+                "set_headers"
+            ]
+        ]
+    },
+    {
+        "id": "set_headers",
+        "type": "change",
+        "z": "tab_shelly_export",
+        "name": "Als Download markieren",
+        "rules": [
+            {
+                "t": "set",
+                "p": "headers",
+                "pt": "msg",
+                "to": "{\"Content-Type\":\"text/csv\",\"Content-Disposition\":\"attachment; filename=\\\"shelly_export.csv\\\"\"}",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 850,
+        "y": 820,
+        "wires": [
+            [
+                "http_response"
+            ]
+        ]
+    },
+    {
+        "id": "http_response",
+        "type": "http response",
+        "z": "tab_shelly_export",
+        "name": "Download starten",
+        "statusCode": "",
+        "headers": {},
+        "x": 1150,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "node_http_in",
+        "type": "http in",
+        "z": "tab_shelly_export",
+        "name": "Download Endpunkt",
+        "url": "/download-shelly-csv",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 230,
+        "y": 1120,
+        "wires": [
+            [
+                "node_read_file"
+            ]
+        ]
+    },
+    {
+        "id": "node_read_file",
+        "type": "file in",
+        "z": "tab_shelly_export",
+        "name": "Datei einlesen",
+        "filename": "/data/shelly_ha_daten.csv",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 440,
+        "y": 1040,
+        "wires": [
+            [
+                "node_set_headers"
+            ]
+        ]
+    },
+    {
+        "id": "node_set_headers",
+        "type": "change",
+        "z": "tab_shelly_export",
+        "name": "Download-Header setzen",
+        "rules": [
+            {
+                "t": "set",
+                "p": "headers",
+                "pt": "msg",
+                "to": "{\"Content-Type\":\"text/csv\",\"Content-Disposition\":\"attachment; filename=shelly_daten.csv\"}",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 730,
+        "y": 1060,
+        "wires": [
+            [
+                "node_http_out"
+            ]
+        ]
+    },
+    {
+        "id": "node_http_out",
+        "type": "http response",
+        "z": "tab_shelly_export",
+        "name": "Datei senden",
+        "statusCode": "",
+        "headers": {},
+        "x": 1070,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "71a4fecb95a815f4",
+        "type": "inject",
+        "z": "tab_shelly_export",
+        "name": "Alle 15 Minuten",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "900",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 330,
+        "y": 1380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "29cbee0226016431",
+        "type": "api-current-state",
+        "z": "tab_shelly_export",
+        "name": "Shelly Wert abfragen",
+        "server": "ha_server_1",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.shellypro3em63_ac15186d63fc_phase_a_leistung",
+        "state_type": "str",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "string",
+                "valueType": "entityState"
+            }
+        ],
+        "for": "0",
+        "forType": "num",
+        "forUnits": "minutes",
+        "override_topic": false,
+        "state_location": "payload",
+        "override_payload": "msg",
+        "entity_location": "data",
+        "override_data": "msg",
+        "x": 640,
+        "y": 1240,
+        "wires": [
+            [
+                "500b08ea96457a5c"
+            ]
+        ]
+    },
+    {
+        "id": "500b08ea96457a5c",
+        "type": "function",
+        "z": "tab_shelly_export",
+        "name": "Daten als CSV formatieren",
+        "func": "let timestamp = new Date().toLocaleString('de-DE');\nlet wert = msg.payload;\n\n// Zeile zusammenbauen: Datum/Uhrzeit; Wert mit Zeilenumbruch\nmsg.payload = timestamp + \";\" + wert + \"\\n\";\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 900,
+        "y": 1360,
+        "wires": [
+            [
+                "9c4369bac5f2de90",
+                "44b96832d1644232"
+            ]
+        ]
+    },
+    {
+        "id": "9c4369bac5f2de90",
+        "type": "file",
+        "z": "tab_shelly_export",
+        "name": "In /data/ Datei schreiben",
+        "filename": "/data/shelly_ha_daten.csv",
+        "filenameType": "str",
+        "appendNewline": false,
+        "createDir": true,
+        "overwriteFile": "false",
+        "encoding": "none",
+        "x": 1210,
+        "y": 1340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "44b96832d1644232",
+        "type": "debug",
+        "z": "tab_shelly_export",
+        "name": "Debug Ansicht",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1180,
+        "y": 1460,
+        "wires": []
+    },
+    {
+        "id": "25005223306e54c9",
+        "type": "api-current-state",
+        "z": "tab_shelly_export",
+        "name": "Shelly Wert abfragen",
+        "server": "ha_server_1",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.shellypro3em63_ac15186d63fc_phase_b_leistung",
+        "state_type": "str",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "string",
+                "valueType": "entityState"
+            }
+        ],
+        "for": "0",
+        "forType": "num",
+        "forUnits": "minutes",
+        "override_topic": false,
+        "state_location": "payload",
+        "override_payload": "msg",
+        "entity_location": "data",
+        "override_data": "msg",
+        "x": 640,
+        "y": 1360,
+        "wires": [
+            [
+                "500b08ea96457a5c"
+            ]
+        ]
+    },
+    {
+        "id": "0c169a6c563a6c41",
+        "type": "api-current-state",
+        "z": "tab_shelly_export",
+        "name": "Shelly Wert abfragen",
+        "server": "ha_server_1",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.shellypro3em63_ac15186d63fc_phase_c_leistung",
+        "state_type": "str",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "string",
+                "valueType": "entityState"
+            }
+        ],
+        "for": "0",
+        "forType": "num",
+        "forUnits": "minutes",
+        "override_topic": false,
+        "state_location": "payload",
+        "override_payload": "msg",
+        "entity_location": "data",
+        "override_data": "msg",
+        "x": 660,
+        "y": 1540,
+        "wires": [
+            [
+                "500b08ea96457a5c"
+            ]
+        ]
+    },
+    {
+        "id": "073aa5871f9a8169",
+        "type": "api-current-state",
+        "z": "tab_shelly_export",
+        "name": "Shelly Wert abfragen",
+        "server": "ha_server_1",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "sensor.shellypro3em63_ac15186d63fc_phase_c_scheinleistung",
+        "state_type": "str",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "string",
+                "valueType": "entityState"
+            }
+        ],
+        "for": "0",
+        "forType": "num",
+        "forUnits": "minutes",
+        "override_topic": false,
+        "state_location": "payload",
+        "override_payload": "msg",
+        "entity_location": "data",
+        "override_data": "msg",
+        "x": 680,
+        "y": 1680,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ha_server_1",
+        "type": "server",
+        "name": "HA Server",
+        "addon": false,
+        "rejectUnauthorizedCerts": true,
+        "ha_boolean": [
+            "y",
+            "|",
+            "e",
+            "s",
+            "t",
+            "r",
+            "u",
+            "o",
+            "n",
+            "h",
+            "m",
+            "p"
+        ],
+        "connectionDelay": true,
+        "cacheJson": true,
+        "heartbeat": false,
+        "heartbeatInterval": "30",
+        "areaSelector": "friendlyName",
+        "deviceSelector": "friendlyName",
+        "entitySelector": "friendlyName",
+        "statusSeparator": "at: ",
+        "statusYear": "hidden",
+        "statusMonth": "short",
+        "statusDay": "numeric",
+        "statusHourCycle": "h23",
+        "statusTimeFormat": "h:m",
+        "enableGlobalContextStore": true
+    },
+    {
+        "id": "80fb6d99aacd1b21",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-contrib-home-assistant-websocket": "0.80.3"
+        }
+    }
+]

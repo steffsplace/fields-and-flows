@@ -1,0 +1,506 @@
+[
+    {
+        "id": "60109a4e35cfcb4c",
+        "type": "tab",
+        "label": "heiz 3.0",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "inject_jede_sekunde",
+        "type": "inject",
+        "z": "60109a4e35cfcb4c",
+        "name": "Trigger jede Sekunde",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "zeit-update",
+        "payload": "",
+        "payloadType": "date",
+        "x": 320,
+        "y": 320,
+        "wires": [
+            [
+                "node_logik_final"
+            ]
+        ]
+    },
+    {
+        "id": "ui_text_datum_final",
+        "type": "ui_text",
+        "z": "60109a4e35cfcb4c",
+        "group": "group_zeit_final",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Aktuelle Systemzeit:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 920,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "switch_heizung_final",
+        "type": "ui_switch",
+        "z": "60109a4e35cfcb4c",
+        "name": "",
+        "label": "Heizung Hauptschalter",
+        "tooltip": "",
+        "group": "group_links_final",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "heizungEin",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "x": 390,
+        "y": 380,
+        "wires": [
+            [
+                "node_logik_final"
+            ]
+        ]
+    },
+    {
+        "id": "slider_aussen_final",
+        "type": "ui_slider",
+        "z": "60109a4e35cfcb4c",
+        "name": "",
+        "label": "Aussentemperatur einstellen",
+        "tooltip": "",
+        "group": "group_links_final",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "outs": "all",
+        "topic": "aussenTemp",
+        "topicType": "str",
+        "min": "-20",
+        "max": "30",
+        "step": 1,
+        "x": 410,
+        "y": 440,
+        "wires": [
+            [
+                "node_logik_final",
+                "ui_text_aussentemp_live"
+            ]
+        ]
+    },
+    {
+        "id": "ui_text_aussentemp_live",
+        "type": "ui_text",
+        "z": "60109a4e35cfcb4c",
+        "group": "group_links_final",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "→ Gewählte Aussentemp:",
+        "format": "{{msg.payload}} °C",
+        "layout": "row-spread",
+        "className": "",
+        "x": 680,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "slider_frost_final",
+        "type": "ui_slider",
+        "z": "60109a4e35cfcb4c",
+        "name": "",
+        "label": "Frostschutzgrenze einstellen",
+        "tooltip": "",
+        "group": "group_links_final",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "outs": "all",
+        "topic": "frostschutz",
+        "topicType": "str",
+        "min": 0,
+        "max": "10",
+        "step": 1,
+        "x": 410,
+        "y": 520,
+        "wires": [
+            [
+                "node_logik_final",
+                "ui_text_frost_live"
+            ]
+        ]
+    },
+    {
+        "id": "ui_text_frost_live",
+        "type": "ui_text",
+        "z": "60109a4e35cfcb4c",
+        "group": "group_links_final",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "→ Gewählter Frostschutz:",
+        "format": "{{msg.payload}} °C",
+        "layout": "row-spread",
+        "className": "",
+        "x": 680,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "ui_scheduler_node",
+        "type": "ui_time_scheduler",
+        "z": "60109a4e35cfcb4c",
+        "group": "group_zeit_final",
+        "name": "Heizzeiten programmieren",
+        "startDay": "0",
+        "refresh": "60",
+        "devices": [
+            "Heizzeiten programmieren"
+        ],
+        "singleOff": false,
+        "onlySendChange": false,
+        "customPayload": false,
+        "eventMode": false,
+        "eventOptions": [],
+        "sendTopic": false,
+        "lat": "",
+        "lon": "",
+        "customContextStore": "",
+        "outputs": 2,
+        "order": 2,
+        "width": "12",
+        "height": "0",
+        "x": 360,
+        "y": 620,
+        "wires": [
+            [
+                "node_logik_final",
+                "c10a6fba62d0b39c"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "node_logik_final",
+        "type": "function",
+        "z": "60109a4e35cfcb4c",
+        "name": "Vollautomatische Heizungslogik",
+        "func": "// 1. Werte aus dem globalen Flow-Speicher holen (mit Standardwerten)\nlet aussenTemp = flow.get(\"aussenTemp\") !== undefined ? flow.get(\"aussenTemp\") : 10;\nlet frostschutz = flow.get(\"frostschutz\") !== undefined ? flow.get(\"frostschutz\") : 3;\nlet heizungEin = flow.get(\"heizungEin\") !== undefined ? flow.get(\"heizungEin\") : false;\nlet zeitplanAktiv = flow.get(\"zeitplanAktiv\") !== undefined ? flow.get(\"zeitplanAktiv\") : false;\n\n// 2. Eingehende UI-Nachrichten verarbeiten\nif (msg.topic === \"aussenTemp\") {\n    aussenTemp = Number(msg.payload);\n    flow.set(\"aussenTemp\", aussenTemp);\n} else if (msg.topic === \"frostschutz\") {\n    frostschutz = Number(msg.payload);\n    flow.set(\"frostschutz\", frostschutz);\n} else if (msg.topic === \"heizungEin\") {\n    heizungEin = (msg.payload === true || msg.payload === \"true\");\n    flow.set(\"heizungEin\", heizungEin);\n} else if (msg.topic === \"zeitplan\") {\n    zeitplanAktiv = (msg.payload === true || msg.payload === \"true\");\n    flow.set(\"zeitplanAktiv\", zeitplanAktiv);\n}\n\n// 3. Berechnung der Solltemperatur gemäss Formel: -Aussentemperatur + 40\nlet sollTemp = (-1 * aussenTemp) + 40;\n\n// 4. Logikprüfung für die Heizpumpe\nlet pumpeEin = false;\nlet grund = \"Heizung oder Zeitplan inaktiv\";\n\nif (aussenTemp < frostschutz) {\n    pumpeEin = true;\n    grund = \"Frostschutz aktiv (Aussentemp < Grenze)\";\n} else if (heizungEin === true && zeitplanAktiv === true) {\n    pumpeEin = true;\n    grund = \"Regulärer Heizbetrieb (Hauptschalter & Zeitplan aktiv)\";\n}\n\n// Modus-Text für das Dashboard generieren\nlet modusText = zeitplanAktiv ? \"NormalHeizZeit (Komfortbetrieb)\" : \"Nachtabsenkung (Energiebarmodus)\";\n\n// 5. Ausgänge für das Dashboard vorbereiten\nlet msgPumpe = { payload: pumpeEin ? \"EIN\" : \"AUS\" };\nlet msgSollTempGauge = { payload: sollTemp };\nlet msgSollTempText = { payload: sollTemp.toFixed(1) + \" °C\" };\nlet msgModusStatus = { payload: modusText };\nlet msgGrundStatus = { payload: grund };\n\nreturn [msgPumpe, msgSollTempGauge, msgSollTempText, msgModusStatus, msgGrundStatus];",
+        "outputs": 5,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 460,
+        "wires": [
+            [
+                "ui_button_pumpe_final"
+            ],
+            [
+                "ui_gauge_solltemp_final"
+            ],
+            [
+                "ui_text_solltemp_final"
+            ],
+            [
+                "ui_text_modus_final"
+            ],
+            [
+                "ui_text_grund_final"
+            ]
+        ]
+    },
+    {
+        "id": "ui_button_pumpe_final",
+        "type": "ui_button",
+        "z": "60109a4e35cfcb4c",
+        "name": "",
+        "group": "group_rechts_final",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "Heizpumpe 1: {{msg.payload}}",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 960,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ui_gauge_solltemp_final",
+        "type": "ui_gauge",
+        "z": "60109a4e35cfcb4c",
+        "name": "",
+        "group": "group_rechts_final",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "VL 1 Solltemperatur",
+        "label": "°C",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "className": "",
+        "x": 960,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "ui_text_solltemp_final",
+        "type": "ui_text",
+        "z": "60109a4e35cfcb4c",
+        "group": "group_rechts_final",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Berechnete Soll-Temperatur:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 990,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "ui_text_modus_final",
+        "type": "ui_text",
+        "z": "60109a4e35cfcb4c",
+        "group": "group_zeit_final",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Aktueller Zeitmodus:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 920,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "ui_text_grund_final",
+        "type": "ui_text",
+        "z": "60109a4e35cfcb4c",
+        "group": "group_zeit_final",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Grund für Pumpenstatus:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 930,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "c10a6fba62d0b39c",
+        "type": "file",
+        "z": "60109a4e35cfcb4c",
+        "name": "",
+        "filename": "timer.config",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 690,
+        "y": 700,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "28539bc94b4138f4",
+        "type": "inject",
+        "z": "60109a4e35cfcb4c",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 110,
+        "y": 240,
+        "wires": [
+            [
+                "35f69106dee0d364"
+            ]
+        ]
+    },
+    {
+        "id": "35f69106dee0d364",
+        "type": "file in",
+        "z": "60109a4e35cfcb4c",
+        "name": "",
+        "filename": "timer.config",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 150,
+        "y": 480,
+        "wires": [
+            [
+                "ui_scheduler_node"
+            ]
+        ]
+    },
+    {
+        "id": "inject_taktgeber",
+        "type": "inject",
+        "z": "60109a4e35cfcb4c",
+        "name": "Taktgeber (1s)",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "object",
+        "payloadType": "date",
+        "x": 340,
+        "y": 40,
+        "wires": [
+            [
+                "function_uhrzeit"
+            ]
+        ]
+    },
+    {
+        "id": "function_uhrzeit",
+        "type": "function",
+        "z": "60109a4e35cfcb4c",
+        "name": "Uhrzeit generieren",
+        "func": "let jetzt = new Date();\nlet uhrzeit = jetzt.toLocaleTimeString('de-DE');\nmsg.payload = uhrzeit + \" Uhr\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 80,
+        "wires": [
+            [
+                "ui_text_datum_final"
+            ]
+        ]
+    },
+    {
+        "id": "group_zeit_final",
+        "type": "ui_group",
+        "name": "Vollautomatische Zeitsteuerung",
+        "tab": "tab_heizkreis1_final",
+        "order": 3,
+        "disp": true,
+        "width": "12",
+        "collapse": false
+    },
+    {
+        "id": "group_links_final",
+        "type": "ui_group",
+        "name": "Einstellungen & Sensoren (Links)",
+        "tab": "tab_heizkreis1_final",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "group_rechts_final",
+        "type": "ui_group",
+        "name": "Monitoring & Aktoren (Rechts)",
+        "tab": "tab_heizkreis1_final",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "tab_heizkreis1_final",
+        "type": "ui_tab",
+        "name": "Heizkreis 1",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "76f0d557e9de9e72",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-dashboard": "3.6.6",
+            "node-red-contrib-ui-time-scheduler": "1.17.2"
+        }
+    }
+]
